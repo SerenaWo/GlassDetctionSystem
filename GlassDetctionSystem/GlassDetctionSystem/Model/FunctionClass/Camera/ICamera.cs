@@ -9,6 +9,7 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
 {
     class ICamera : Basler.Pylon.Camera
     {
+        
         /// <summary>
         /// 构造函数;
         /// 传入相机信息
@@ -20,11 +21,12 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// 创建连接，传入相机类型，使用DeviceType类进行有效赋值,检测所有可能的usb相机设备的连接，并返回连接相机数目，以及相机信息列表；
         /// 若存在连接返回true，若无连接返回false
         /// </summary>
-        /// <param name="DeviceType"></param> 
+        /// <param name="DeviceType"></param>
         /// <param name="DeviceNum"></param>
         /// <param name="AllCameraInfo"></param>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public static  bool TryGetConnect(string DeviceType,out int DeviceNum,out List<ICameraInfo> AllCameraInfo)
+        public static  bool TryGetConnect(string DeviceType,out int DeviceNum,out List<ICameraInfo> AllCameraInfo,out string ErrorMessage)
         {
             try
             {
@@ -35,16 +37,19 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
                 {
                     DeviceNum = 0;
                     AllCameraInfo = null;
+                    ErrorMessage = "0个设备连接";
                     return false;
                 }
                 else
                 {
+                    ErrorMessage = null;
                     return true;
                 }
             }
             catch (Exception exception)
             {
-                //此处应该加入显示错误信息
+
+                ErrorMessage = exception.Message;
                 DeviceNum = 0;
                 AllCameraInfo = null;
                 return false;
@@ -59,45 +64,46 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         static void OnConnectionLost(Object sender, EventArgs e)
         {
             //输出相机掉线正在重新连接。。。
-            
-
         }
         /// <summary>
-        /// 配置触发模式为软件触发
+        ///  /// 配置触发模式为软件触发
         /// </summary>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool SoftwareTriggerSet()
+        public bool SoftwareTriggerSet(out string ErrorMessage)
         {
             try
             {
                 this.CameraOpened += Configuration.SoftwareTrigger;
                 this.ConnectionLost += OnConnectionLost;
+                ErrorMessage = null;
                 return true;
             }
             catch (Exception exception)
             {
-                //此处应该加入显示错误信息
-                return false;
-                
+                ErrorMessage = exception.Message;
+                return false;                
             }
         }
+
         /// <summary>
         /// 配置曝光模式为连续自动曝光
         /// </summary>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool SetAutoExposure()
+        public bool SetAutoExposure(out string ErrorMessage)
         {
             try
             {
                 this.Parameters[PLUsbCamera.ExposureAuto].TrySetValue(PLUsbCamera.ExposureAuto.Continuous);
                 //this.Parameters[PLUsbCamera.ExposureMode].TrySetValue(PLUsbCamera.ExposureMode.Timed);????
+                ErrorMessage = null;
                 return true;
             }
             catch (Exception exception)
             {
-                //此处应该加入显示错误信息
+                ErrorMessage = exception.Message;
                 return false;
-
             }
 
         }
@@ -113,19 +119,20 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// <summary>
         /// 配置曝光模式为按时间曝光
         /// </summary>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool CloseAutoExposure()
+        public bool CloseAutoExposure(out string ErrorMessage)
         {
             try
             {
                 this.Parameters[PLUsbCamera.ExposureAuto].TrySetValue(PLUsbCamera.ExposureAuto.Off);
-                this.Parameters[PLUsbCamera.ExposureMode].TrySetValue(PLUsbCamera.ExposureMode.Timed);                
-
+                this.Parameters[PLUsbCamera.ExposureMode].TrySetValue(PLUsbCamera.ExposureMode.Timed);
+                ErrorMessage = null;
                 return true;
             }
             catch (Exception exception)
             {
-                //此处应该加入显示错误信息
+                ErrorMessage = exception.Message;
                 return false;
             }
 
@@ -134,34 +141,38 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// 设置曝光时间
         /// </summary>
         /// <param name="ExposureTime"></param>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool SetExposureTime(double ExposureTime)
+        public bool SetExposureTime(double ExposureTime, out string ErrorMessage)
         {
             try
             {
                 this.Parameters[PLUsbCamera.ExposureTime].TrySetValue(ExposureTime);
+                ErrorMessage = null;
                 return true;
             }
             catch (Exception exception)
             {
-                //此处应该加入显示错误信息
+                ErrorMessage = exception.Message;
                 return false;
             }
         }
         /// <summary>
         /// 打开相机，最大等待一秒后返回结果
         /// </summary>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool OpenCamera()
+        public bool OpenCamera(out string ErrorMessage)
         {
             try
             {
+                ErrorMessage = null;
                 return this.Open(1000, TimeoutHandling.ThrowException);
        
             }
             catch (Exception exception)
             {
-                //此处应该加入显示错误信息
+                ErrorMessage = exception.Message;
                 return false;
             }
 
@@ -169,18 +180,20 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// <summary>
         /// 关闭并注销相机，在该函数执行后应将函数类置空，camera=null
         /// </summary>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool CloseCamera()
+        public bool CloseCamera(out string ErrorMessage)
         {
             try
             {               
                     this.Close();
                     this.Dispose();
+                    ErrorMessage = null;
                     return true;
             }
-            catch
+            catch(Exception exception)
             {
-                //此处应该加入显示错误信息Console.Error.WriteLine("Exception: {0}", e.Message);
+                ErrorMessage = exception.Message;
                 return false;
             }
 
@@ -190,24 +203,133 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// </summary>
         /// <param name="Width"></param>
         /// <param name="Height"></param>
+        /// <param name="ErrorMessage"></param>
         /// <returns></returns>
-        public bool GetAOISize(out long Width, out long  Height)
+        public bool GetAOISize(out long Width, out long  Height, out string ErrorMessage)
         {
             try
             {
                 Width = this.Parameters[PLCamera.Width].GetValue();
                 Height = this.Parameters[PLCamera.Height].GetValue();
+                ErrorMessage = null;
                 return true;
                // PLCamera.PixelFormat.
             }
-            catch
+            catch (Exception exception)
             {
                 Width = 0;
                 Height = 0;
-                //此处应该加入显示错误信息Console.Error.WriteLine("Exception: {0}", e.Message);
+                ErrorMessage = exception.Message;
                 return false;
             }
         }
+        /// <summary>
+        /// 使相机处于可以抓取状态
+        /// </summary>
+        /// <returns></returns>
+        public bool GrabReady()
+        {
+            if (this.IsOpen && this.IsConnected)
+            {
+                this.StreamGrabber.Start();
+                if (this.StreamGrabber.IsGrabbing)
+                {
+                    return true;
+                }
+                else return false;
+            }
+            else
+            {
+                return false;
+            }            
+        }
+        /// <summary>
+        /// 使相机停止可以抓取状态
+        /// </summary>
+        /// <returns></returns>
+        public bool GrabStop()
+        {
+            this.StreamGrabber.Stop();
+            if (!this.StreamGrabber.IsGrabbing)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+        /// <summary>
+        /// 触发一次拍照，返回图片宽高和图片数组
+        /// </summary>
+        /// <param name="status"></param>
+        /// <param name="ImageWidth"></param>
+        /// <param name="ImageHeight"></param>
+        /// <param name="buffer"></param>
+        /// <param name="ErrorMessage"></param>
+        /// <returns></returns>
+        public bool Trigger(out int status,out int ImageWidth,out int ImageHeight,out byte[] buffer, out string ErrorMessage)
+        {
+            const int isDone = 0;
+            const int noGrabing = 1;
+            const int isTriggering = 2;
+            const int ResultError = 3;
+            if (this.WaitForFrameTriggerReady(1000, TimeoutHandling.ThrowException))
+            {
+                if (this.StreamGrabber.IsGrabbing)
+                {
+                    this.ExecuteSoftwareTrigger();
+                    IGrabResult grabResult = this.StreamGrabber.RetrieveResult(5000, TimeoutHandling.ThrowException);
+                    using (grabResult)
+                    {
+                        if (grabResult.GrabSucceeded)
+                        {
+                            ImageWidth = grabResult.Width;
+                            ImageHeight = grabResult.Height;
+                            buffer = grabResult.PixelData as byte[];
+                            status = isDone;
+                            ErrorMessage = null;
+                            return true;
+                        }
+                        else
+                        {
+                            status = ResultError;
+                            ImageWidth = 0;
+                            ImageHeight =0;
+                            buffer = null;
+                            ErrorMessage = grabResult.ErrorCode+grabResult.ErrorDescription;
+                            return false;
+                        }
+
+                    }
+                                  
+                }
+                else
+                {
+                    status = noGrabing;
+                    ErrorMessage = "相机不在抓取状态下。";
+                    ImageWidth = 0;
+                    ImageHeight = 0;
+                    buffer = null;
+                    return false;
+
+                }
+
+            }
+            else
+            {
+                ImageWidth = 0;
+                ImageHeight = 0;
+                buffer = null;
+                status = isTriggering;
+                ErrorMessage = "正在等待前一次触发完成。";
+                return false;
+            }
+
+        }
+        
+
+
 
     }
 }
