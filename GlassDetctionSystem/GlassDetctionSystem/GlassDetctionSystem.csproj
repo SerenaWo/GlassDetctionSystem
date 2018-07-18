@@ -32,6 +32,10 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Automation.BDaq, Version=1.0.1.0, Culture=neutral, PublicKeyToken=463f5928d60183a0, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>.\Automation.BDaq.dll</HintPath>
+    </Reference>
     <Reference Include="Basler.Pylon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e389355f398382ab, processorArchitecture=AMD64">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Basler.Pylon.dll</HintPath>
@@ -48,6 +52,7 @@
   <ItemGroup>
     <Compile Include="Model\FunctionClass\Camera\ICamera.cs" />
     <Compile Include="Model\FunctionClass\DataCard\DataCard Interface.cs" />
+    <Compile Include="Model\FunctionClass\DataCard\DataCard.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
