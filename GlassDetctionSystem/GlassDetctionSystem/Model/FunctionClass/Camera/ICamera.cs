@@ -66,7 +66,7 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
             //输出相机掉线正在重新连接。。。
         }
         /// <summary>
-        ///  /// 配置触发模式为软件触发
+        ///配置触发模式为软件触发
         /// </summary>
         /// <param name="ErrorMessage"></param>
         /// <returns></returns>

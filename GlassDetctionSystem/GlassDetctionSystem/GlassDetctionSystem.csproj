@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Model\FunctionClass\Camera\ICamera.cs" />
+    <Compile Include="Model\FunctionClass\DataCard\DataCard Interface.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -56,7 +57,6 @@
   <ItemGroup>
     <Folder Include="Controller\" />
     <Folder Include="Model\FormModel\" />
-    <Folder Include="Model\FunctionClass\DataCard\" />
     <Folder Include="Model\FunctionClass\Detect\" />
     <Folder Include="View\Form\" />
     <Folder Include="View\Panel\" />
