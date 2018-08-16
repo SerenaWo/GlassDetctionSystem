@@ -10,6 +10,18 @@ namespace GlassDetctionSystem.Model.FunctionClass.DataCard
 {
     class DataCard : DataCard_Interface
     {
+       private static DataCard datacard;
+        private DataCard()
+        { }
+        public static DataCard getinstance()
+        {
+            if (datacard == null)
+            {
+                datacard = new DataCard();                
+            }
+            return datacard;  
+        }
+    
         /// <summary>
         /// 数据缓存，存储当前状态（解决数据卡写入后，继电器转换延迟，立即读取数据不准的问题）
         /// </summary>

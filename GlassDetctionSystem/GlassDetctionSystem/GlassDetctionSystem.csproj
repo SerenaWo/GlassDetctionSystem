@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{35BCE55C-75A3-4E36-B4E1-2353C6A97D20}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <RootNamespace>GlassDetctionSystem</RootNamespace>
     <AssemblyName>GlassDetctionSystem</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
@@ -51,17 +51,23 @@
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Automation.BDaq, Version=1.0.1.0, Culture=neutral, PublicKeyToken=463f5928d60183a0, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>.\Automation.BDaq.dll</HintPath>
     </Reference>
-    <Reference Include="Basler.Pylon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e389355f398382ab, processorArchitecture=AMD64">
+    <Reference Include="Basler.Pylon, Version=1.0.0.0, Culture=neutral, PublicKeyToken=e389355f398382ab, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>.\Basler.Pylon.dll</HintPath>
+      <HintPath>..\..\..\basler\Development\Assemblies\Basler.Pylon\x86\Basler.Pylon.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -70,10 +76,48 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controller\CalibrationController.cs" />
+    <Compile Include="Controller\DeveloperTestController.cs" />
+    <Compile Include="Controller\InitializeController.cs" />
+    <Compile Include="Model\FormModel\CalibrationModel.cs" />
+    <Compile Include="Model\FunctionClass\ImageProcess\CalibrationProcess.cs" />
+    <Compile Include="Model\InteractiveData\ChosenCamera.cs" />
+    <Compile Include="View\Form\Calibration.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form\.Designer.cs">
+      <DependentUpon>Calibration.cs</DependentUpon>
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Model\FormModel\InitializeModel.cs" />
+    <Compile Include="View\Form\Initialize.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form\Initialize.Designer.cs">
+      <DependentUpon>Initialize.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FormModel\DeveloperTestModel.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="View\Form\DeveloperTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form\DeveloperTest.Designer.cs">
+      <DependentUpon>DeveloperTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\Device Interface\On_Off_Interface.cs" />
+    <Compile Include="Model\FunctionClass\Camera\GetCameraInfo.cs" />
     <Compile Include="Model\FunctionClass\Camera\ICamera.cs" />
     <Compile Include="Model\FunctionClass\DataCard\DataCard Interface.cs" />
     <Compile Include="Model\FunctionClass\DataCard\DataCard.cs" />
+    <Compile Include="Model\FunctionClass\Detect\AbstractCameraStrategy.cs" />
+    <Compile Include="Model\FunctionClass\Detect\CameraStrategy.cs" />
+    <Compile Include="Model\FunctionClass\Detect\DetectObserver.cs" />
+    <Compile Include="Model\FunctionClass\Detect\DetectStrategy.cs" />
+    <Compile Include="Model\FunctionClass\Ports\Port.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -81,11 +125,22 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Controller\" />
-    <Folder Include="Model\FormModel\" />
-    <Folder Include="Model\FunctionClass\Detect\" />
-    <Folder Include="View\Form\" />
     <Folder Include="View\Panel\" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form\Calibration.resx">
+      <DependentUpon>Calibration.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form\DeveloperTest.resx">
+      <DependentUpon>DeveloperTest.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form\Initialize.resx">
+      <DependentUpon>Initialize.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

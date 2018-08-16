@@ -1,0 +1,3 @@
+LIBRARY "OpencvProcess"
+EXPORTS
+read @ 1

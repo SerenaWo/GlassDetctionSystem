@@ -5,57 +5,31 @@ using System.Text;
 using System.Threading.Tasks;
 using Basler.Pylon;
 
-namespace GlassDetctionSystem.Model.FunctionClass.Camera
+namespace GlassDetctionSystem
 {
     class ICamera : Basler.Pylon.Camera
     {
-        
+        private static ICamera Icamera;
+        //string ErrorMessage;
         /// <summary>
         /// 构造函数;
         /// 传入相机信息
         /// </summary>
-        public ICamera(ICameraInfo cameraInfo) : base(cameraInfo)
+        private ICamera(ICameraInfo cameraInfo) : base(cameraInfo)
         {
         }
-        /// <summary>
-        /// 创建连接，传入相机类型，使用DeviceType类进行有效赋值,检测所有可能的usb相机设备的连接，并返回连接相机数目，以及相机信息列表；
-        /// 若存在连接返回true，若无连接返回false
-        /// </summary>
-        /// <param name="DeviceType"></param>
-        /// <param name="DeviceNum"></param>
-        /// <param name="AllCameraInfo"></param>
-        /// <param name="ErrorMessage"></param>
-        /// <returns></returns>
-        public static  bool TryGetConnect(string DeviceType,out int DeviceNum,out List<ICameraInfo> AllCameraInfo,out string ErrorMessage)
+        public static ICamera getInstance(ICameraInfo cameraInfo)
         {
-            try
+            //ICamera Icamera;
+            if (Icamera == null)
             {
-
-                AllCameraInfo = CameraFinder.Enumerate(DeviceType);
-                DeviceNum = AllCameraInfo.Count;
-                if (DeviceNum == 0)
-                {
-                    DeviceNum = 0;
-                    AllCameraInfo = null;
-                    ErrorMessage = "0个设备连接";
-                    return false;
-                }
-                else
-                {
-                    ErrorMessage = null;
-                    return true;
-                }
+                Icamera = new ICamera(cameraInfo);
             }
-            catch (Exception exception)
-            {
-
-                ErrorMessage = exception.Message;
-                DeviceNum = 0;
-                AllCameraInfo = null;
-                return false;
-            }
-
+            
+            
+            return Icamera;
         }
+       
         /// <summary>
         /// 内部事件，当相机掉线时触发的处理事件(考虑使用外部事件)
         /// </summary>
@@ -95,7 +69,7 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         {
             try
             {
-                this.Parameters[PLUsbCamera.ExposureAuto].TrySetValue(PLUsbCamera.ExposureAuto.Continuous);
+                this.Parameters[PLGigECamera.ExposureAuto].TrySetValue(PLGigECamera.ExposureAuto.Continuous);
                 //this.Parameters[PLUsbCamera.ExposureMode].TrySetValue(PLUsbCamera.ExposureMode.Timed);????
                 ErrorMessage = null;
                 return true;
@@ -113,7 +87,7 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// <returns></returns>
         public double  GetCurrentExposureTime()
         {
-            return this.Parameters[PLUsbCamera.ExposureTime].GetValue();
+            return this.Parameters[PLGigECamera.ExposureTimeAbs].GetValue();
         }
 
         /// <summary>
@@ -125,8 +99,9 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         {
             try
             {
-                this.Parameters[PLUsbCamera.ExposureAuto].TrySetValue(PLUsbCamera.ExposureAuto.Off);
-                this.Parameters[PLUsbCamera.ExposureMode].TrySetValue(PLUsbCamera.ExposureMode.Timed);
+                this.Parameters[PLGigECamera.ExposureAuto].TrySetValue(PLUsbCamera.ExposureAuto.Off);
+                this.Parameters[PLGigECamera.ExposureMode].TrySetValue(PLUsbCamera.ExposureMode.Timed);
+                
                 ErrorMessage = null;
                 return true;
             }
@@ -147,7 +122,7 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         {
             try
             {
-                this.Parameters[PLUsbCamera.ExposureTime].TrySetValue(ExposureTime);
+                this.Parameters[PLGigECamera.ExposureTimeAbs].TrySetValue(ExposureTime);
                 ErrorMessage = null;
                 return true;
             }
@@ -227,19 +202,36 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
         /// 使相机处于可以抓取状态
         /// </summary>
         /// <returns></returns>
-        public bool GrabReady()
+        public bool GrabReady(out string ErrorMessage)
         {
             if (this.IsOpen && this.IsConnected)
             {
-                this.StreamGrabber.Start();
-                if (this.StreamGrabber.IsGrabbing)
+                try
                 {
-                    return true;
+                    this.StreamGrabber.Start();
+                    if (this.StreamGrabber.IsGrabbing)
+                    {
+                        ErrorMessage = null;
+                        return true;
+                    }
+                    else
+                    {
+                        ErrorMessage = "相机不在可抓取状态！";
+                        return false;
+                    }
+
                 }
-                else return false;
+                catch (Exception exception)
+                {
+                   
+                    ErrorMessage = exception.Message;
+                    return false;
+                }
+
             }
             else
             {
+                ErrorMessage = "相机未打开或者未连接！";
                 return false;
             }            
         }
@@ -274,19 +266,21 @@ namespace GlassDetctionSystem.Model.FunctionClass.Camera
             const int noGrabing = 1;
             const int isTriggering = 2;
             const int ResultError = 3;
-            if (this.WaitForFrameTriggerReady(1000, TimeoutHandling.ThrowException))
+            if (WaitForFrameTriggerReady(1000, TimeoutHandling.ThrowException))
             {
                 if (this.StreamGrabber.IsGrabbing)
                 {
                     this.ExecuteSoftwareTrigger();
-                    IGrabResult grabResult = this.StreamGrabber.RetrieveResult(5000, TimeoutHandling.ThrowException);
+                    IGrabResult grabResult = StreamGrabber.RetrieveResult(5000, TimeoutHandling.ThrowException);
                     using (grabResult)
                     {
                         if (grabResult.GrabSucceeded)
                         {
                             ImageWidth = grabResult.Width;
                             ImageHeight = grabResult.Height;
+                            
                             buffer = grabResult.PixelData as byte[];
+                            ImagePersistence.Save(ImageFileFormat.Bmp, "test.bmp", grabResult);
                             status = isDone;
                             ErrorMessage = null;
                             return true;
