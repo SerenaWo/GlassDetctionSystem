@@ -9,10 +9,10 @@ namespace GlassDetctionSystem.Model.FunctionClass.Detect
     class DetectObserver
     {
         private bool startDetectSignal;
-        private DetectStrategy detectStrategy;
+        private CameraStrategy detectStrategy;
         private Port port;
 
-        public DetectObserver(DetectStrategy detectStrategy, Port port)
+        public DetectObserver(CameraStrategy detectStrategy, Port port)
         {
             startDetectSignal = detectStrategy.getSignal(port);
             this.port = port;
@@ -28,7 +28,7 @@ namespace GlassDetctionSystem.Model.FunctionClass.Detect
                     startDetectSignal = detectStrategy.getSignal(port);
                     if (!startDetectSignal)
                     {//下降沿
-                        detectStrategy.unReady(port);
+                        //detectStrategy.unReady(port);
                     }
                 }
                 else

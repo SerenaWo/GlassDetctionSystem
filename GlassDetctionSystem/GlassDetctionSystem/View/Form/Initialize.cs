@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using GlassDetctionSystem.Controller;
+using GlassDetctionSystem.Model.InteractiveData;
 
 
 namespace GlassDetctionSystem
@@ -93,8 +94,8 @@ namespace GlassDetctionSystem
                     timer1.Enabled = false;
                     timer2.Enabled = true;
                     label7.Text = ("正在初始化数据卡...");
-                    label8.Visible = true;
-                    pictureBox4.Visible = true;
+                    //label8.Visible = true;
+                    //pictureBox4.Visible = true;
 
                 }
                 else
@@ -135,6 +136,18 @@ namespace GlassDetctionSystem
                     label5.Text = ("已连接");
                     label8.Visible = true;
                     pictureBox4.Visible = true;
+                    label9.Visible = true;
+                    pictureBox5.Visible = true;
+                    if (opendatacardtime == 1500)
+                    {
+                        timer2.Enabled = false;
+                        timer1.Enabled = false;
+                        MainDetectController mainDetectController = new MainDetectController(new MainDetect());
+                        timer1.Enabled = false;
+                        timer2.Enabled = false;
+                        this.Hide();
+                        mainDetectController.view.Show();
+                    }
                 }
                 else
                 {
@@ -189,6 +202,30 @@ namespace GlassDetctionSystem
             timer2.Enabled = false;
             this.Hide();
             calibrationController.view.Show();
+            FormInteraction.IsCalibrationShow = true;
+            timer3.Enabled=true;
+        }
+
+        private void pictureBox5_Click(object sender, EventArgs e)
+        {
+            StandardEntryController standardEntryController = new StandardEntryController(new StandardEntry());
+            timer1.Enabled = false;
+            timer2.Enabled = false;
+            this.Hide();
+            standardEntryController.view.Show();
+            FormInteraction.IsStandardEntryShow = true;
+            timer3.Enabled = true;
+        }
+
+        private void timer3_Tick(object sender, EventArgs e)
+        {
+            if (!FormInteraction.IsCalibrationShow && !FormInteraction.IsStandardEntryShow)
+            {
+                timer1.Enabled = true;
+                timer2.Enabled = true;
+                timer3.Enabled = false;
+                
+            }
         }
     }
 }

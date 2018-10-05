@@ -130,6 +130,8 @@ namespace GlassDetctionSystem.Model.FunctionClass.DataCard
             DoInstance.Read(0, out data);
             return data;
         }
+
+        
         /// <summary>
         /// 读取特定位上的数据
         /// </summary>

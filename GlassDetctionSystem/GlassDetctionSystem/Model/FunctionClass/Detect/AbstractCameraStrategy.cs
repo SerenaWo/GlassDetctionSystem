@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using GlassDetctionSystem.Model.FunctionClass.Camera;
 using GlassDetctionSystem.Model.FunctionClass.DataCard;
 using Basler.Pylon;
+using GlassDetctionSystem.Model.FormModel;
 
 namespace GlassDetctionSystem.Model.FunctionClass.Detect
 {
@@ -17,12 +18,16 @@ namespace GlassDetctionSystem.Model.FunctionClass.Detect
         //List<ICameraInfo> AllCameraInfo;
         string ErrorMessage;
         ICameraInfo cameraInfo;
+        ParameterPackage parameters;
+
+        
 
 
         //构造时初始化相机和端口
-        public AbstractCameraStrategy(ICameraInfo cameraInfo)
+        public AbstractCameraStrategy(ICameraInfo cameraInfo,ParameterPackage parameters)
         {
             this.cameraInfo = cameraInfo;
+            this.parameters = parameters;
             //getCameraInfo.TryGetConnect(DeviceType.GigE, out DeviceNum, out AllCameraInfo, out ErrorMessage);
             ICamera Icamera = ICamera.getInstance(cameraInfo);
         }

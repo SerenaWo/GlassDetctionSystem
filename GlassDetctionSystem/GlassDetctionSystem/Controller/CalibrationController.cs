@@ -17,5 +17,6 @@ namespace GlassDetctionSystem.Controller
             this.view = view;
             this.view.controller = this;
         }
+
     }
 }

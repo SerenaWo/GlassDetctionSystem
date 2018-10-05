@@ -7,7 +7,7 @@ using Basler.Pylon;
 
 namespace GlassDetctionSystem
 {
-    class ICamera : Basler.Pylon.Camera
+    public class ICamera : Basler.Pylon.Camera
     {
         private static ICamera Icamera;
         //string ErrorMessage;

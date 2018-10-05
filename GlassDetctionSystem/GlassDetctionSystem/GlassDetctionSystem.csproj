@@ -40,6 +40,7 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>true</Prefer32Bit>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -53,6 +54,26 @@
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Automation.BDaq, Version=1.0.1.0, Culture=neutral, PublicKeyToken=463f5928d60183a0, processorArchitecture=MSIL">
@@ -79,8 +100,46 @@
     <Compile Include="Controller\CalibrationController.cs" />
     <Compile Include="Controller\DeveloperTestController.cs" />
     <Compile Include="Controller\InitializeController.cs" />
+    <Compile Include="Controller\MainDetectController.cs" />
+    <Compile Include="Controller\StandardEntryController.cs" />
+    <Compile Include="Controller\TempTestController.cs" />
+    <Compile Include="Look.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Look.Designer.cs">
+      <DependentUpon>Look.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FormModel\MainDetectModel.cs" />
+    <Compile Include="Model\FunctionClass\FlawPoint.cs" />
+    <Compile Include="Model\FunctionClass\ImageProcess\Detection.cs" />
+    <Compile Include="Model\FunctionClass\ImageProcess\Transport.cs" />
+    <Compile Include="Model\FunctionClass\MyListBoxItem.cs" />
+    <Compile Include="Model\FunctionClass\ParameterPackage.cs" />
+    <Compile Include="Model\InteractiveData\FormInteraction.cs" />
+    <Compile Include="Model\InteractiveData\ResultBuffer.cs" />
+    <Compile Include="View\Form\MainDetect.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form\MainDetect.Designer.cs">
+      <DependentUpon>MainDetect.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FormModel\StandardEntryModel.cs" />
+    <Compile Include="View\Form\StandardEntry.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form\StandardEntry.Designer.cs">
+      <DependentUpon>StandardEntry.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\FormModel\TempTestModel.cs" />
+    <Compile Include="View\Form\TempTest.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="View\Form\TempTest.Designer.cs">
+      <DependentUpon>TempTest.cs</DependentUpon>
+    </Compile>
     <Compile Include="Model\FormModel\CalibrationModel.cs" />
     <Compile Include="Model\FunctionClass\ImageProcess\CalibrationProcess.cs" />
+    <Compile Include="Model\FunctionClass\XML\XMLParser.cs" />
     <Compile Include="Model\InteractiveData\ChosenCamera.cs" />
     <Compile Include="View\Form\Calibration.cs">
       <SubType>Form</SubType>
@@ -124,13 +183,23 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
-    <Folder Include="View\Panel\" />
-  </ItemGroup>
-  <ItemGroup>
+    <EmbeddedResource Include="Look.resx">
+      <DependentUpon>Look.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form\MainDetect.resx">
+      <DependentUpon>MainDetect.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form\StandardEntry.resx">
+      <DependentUpon>StandardEntry.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="View\Form\TempTest.resx">
+      <DependentUpon>TempTest.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="View\Form\Calibration.resx">
       <DependentUpon>Calibration.cs</DependentUpon>
